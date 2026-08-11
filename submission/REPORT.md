@@ -75,4 +75,4 @@ Sau CP1, mỗi request có một `correlation_id` duy nhất dạng `req-<8hex>`
 Với mỗi thành viên, ghi rõ nhiệm vụ và link commit/PR tương ứng.
 
 Thành viên	Phần việc	Commit/PR	Điều đã học
-B	Uncomment/nâng cấp scrub_event toàn cục, thêm regex passport & address_vn trong app/pii.py, app/logging_config.py	(link commit của bạn)	Cách structlog xử lý processor pipeline theo thứ tự; tầm quan trọng của việc scrub mọi field chứ không chỉ payload
+B	Uncomment/nâng cấp scrub_event toàn cục, thêm regex passport & address_vn trong app/pii.py, app/logging_config.py Cách structlog xử lý processor pipeline theo thứ tự; tầm quan trọng của việc scrub mọi field chứ không chỉ payload
