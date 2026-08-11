@@ -1,6 +1,6 @@
 # Alert va Runbook
 
-Moi alert duoc dat theo trieu chung tac dong den nguoi dung hoac SLO, khong dat theo ten ham hay implementation noi bo.
+Moi alert duoc dat theo trieu chung tac dong den nguoi dung hoac SLO, khong dat theo ten ham hay implementation noi bo. Cach nay uu tien cac van de nguoi dung thuc su cam nhan (loi, cham, vuot ngan sach) va giu alert on dinh khi doi ten ham, thay model, hay refactor he thong. Alert theo implementation de tao nhieu nhiu va co the bo sot tac dong thuc te den nguoi dung.
 
 ## Alert 1
 
