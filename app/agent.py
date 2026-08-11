@@ -24,9 +24,11 @@ class AgentResult:
 
 
 class LabAgent:
-    def __init__(self, model: str = "claude-sonnet-4-5") -> None:
+    def __init__(self, model: str = "claude-sonnet-4-5", max_tokens: int = 180) -> None:
         self.model = model
+        self.max_tokens = max_tokens
         self.llm = FakeLLM(model=model)
+        self._cache: dict[str, tuple[str, int, int]] = {}
 
     @observe(
         name="chat-response",
@@ -52,10 +54,24 @@ class LabAgent:
             message=message,
             enabled=tracing_enabled(),
         )
-        response = self.llm.generate(prompt.text)
-        quality_score = self._heuristic_quality(message, response.text, docs)
+
+        cache_key = f"{feature}:{message}"
+        if cache_key in self._cache:
+            answer_text, tokens_in, tokens_out = self._cache[cache_key]
+            tokens_out = 0  # Cached response saves output generation tokens
+            cost_usd = 0.0
+            managed_prompt = prompt.managed_prompt
+        else:
+            response = self.llm.generate(prompt.text, max_tokens=self.max_tokens)
+            answer_text = response.text
+            tokens_in = response.usage.input_tokens
+            tokens_out = response.usage.output_tokens
+            cost_usd = self._estimate_cost(tokens_in, tokens_out)
+            managed_prompt = prompt.managed_prompt
+            self._cache[cache_key] = (answer_text, tokens_in, tokens_out)
+
+        quality_score = self._heuristic_quality(message, answer_text, docs)
         latency_ms = int((time.perf_counter() - started) * 1000)
-        cost_usd = self._estimate_cost(response.usage.input_tokens, response.usage.output_tokens)
 
         trace_metadata = {
             "prompt_name": prompt.name,
@@ -71,7 +87,7 @@ class LabAgent:
             session_id=session_id,
             tags=["lab", feature, self.model],
             input={"message": summarize_text(message)},
-            output={"answer": summarize_text(response.text)},
+            output={"answer": summarize_text(answer_text)},
             metadata=trace_metadata,
         )
         langfuse_client.update_current_generation(
@@ -86,26 +102,26 @@ class LabAgent:
                 "prompt_fetch_error": prompt.fetch_error,
             },
             usage_details={
-                "prompt_tokens": response.usage.input_tokens,
-                "completion_tokens": response.usage.output_tokens,
+                "prompt_tokens": tokens_in,
+                "completion_tokens": tokens_out,
             },
             cost_details={"total": cost_usd},
-            prompt=prompt.managed_prompt,
+            prompt=managed_prompt,
         )
 
         metrics.record_request(
             latency_ms=latency_ms,
             cost_usd=cost_usd,
-            tokens_in=response.usage.input_tokens,
-            tokens_out=response.usage.output_tokens,
+            tokens_in=tokens_in,
+            tokens_out=tokens_out,
             quality_score=quality_score,
         )
 
         return AgentResult(
-            answer=response.text,
+            answer=answer_text,
             latency_ms=latency_ms,
-            tokens_in=response.usage.input_tokens,
-            tokens_out=response.usage.output_tokens,
+            tokens_in=tokens_in,
+            tokens_out=tokens_out,
             cost_usd=cost_usd,
             quality_score=quality_score,
         )

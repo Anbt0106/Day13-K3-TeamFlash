@@ -90,3 +90,28 @@ Với mỗi thành viên, ghi rõ nhiệm vụ và link commit/PR tương ứng.
 |---|---|---|---|
 | B | Uncomment/nâng cấp `scrub_event` toàn cục, thêm regex passport và `address_vn` trong `app/pii.py`, `app/logging_config.py` | Bổ sung commit/PR | Cách structlog xử lý processor pipeline theo thứ tự; tầm quan trọng của việc scrub mọi field chứ không chỉ payload |
 | Thành viên D | QA CP1; Dashboard Spec/runtime; load test baseline; chủ trì CP3; điều tra Metrics → Traces → Logs; tổng hợp evidence/report/demo | `490b7fb` (CP1), commit CP2/CP3 bổ sung sau khi chốt | Cách kiểm chứng logging/PII, percentile/SLO và định vị root cause bằng span kết hợp correlation ID |
+
+## 8. Bonus — Tối ưu chi phí, Audit Log & Custom Automation (+10 điểm)
+
+- **Tối ưu chi phí (Cost Optimization)**:
+  - Incident: `cost_spike` (LLM sinh output tokens gấp 4 lần).
+  - Giải pháp triển khai: Áp dụng Token Budgeting (`max_tokens=150`) và Semantic/Exact Response Caching trong `LabAgent` ([app/agent.py](../app/agent.py)).
+  - Kết quả đo lường:
+    - *Chi phí Before (Uncapped)*: **$0.077610 USD** (510.8 tokens out/req).
+    - *Chi phí After (Optimized + Cache)*: **$0.023490 USD** (150.0 tokens out/req).
+    - *Hiệu quả tiết kiệm*: Giảm **69.73%** chi phí LLM trong điều kiện cost spike; tiết kiệm **100%** chi phí cho các truy vấn trùng lặp (cache hit cost = $0.00).
+  - Chi tiết & Evidence: [`submission/evidence/cp-bonus-cost-optimization.md`](evidence/cp-bonus-cost-optimization.md).
+
+- **Audit Log độc lập (`data/audit.jsonl`)**:
+  - Triển khai `AuditFileProcessor` trong structlog pipeline ([app/logging_config.py](../app/logging_config.py)) để tự động lọc và ghi các sự kiện nhạy cảm/kiểm toán (`incident_enabled`, `incident_disabled`, `app_started`, `config_changed`).
+  - Phân tách riêng biệt log vận hành ứng dụng (`data/logs.jsonl`) và log kiểm toán bảo mật (`data/audit.jsonl`).
+
+- **Custom Automation phát hiện bất thường (`scripts/detect_anomalies.py`)**:
+  - Kịch bản CLI tự động quét và kiểm thử:
+    1. Phát hiện PII leak nguyên văn (Email, Phone VN, CCCD, Credit Card, Passport, Address VN).
+    2. Cảnh báo vi phạm Latency SLO (P95 > 3000ms, Max > 5000ms).
+    3. Cảnh báo bùng phát tỷ lệ lỗi (Error Rate > 2.0%).
+    4. Cảnh báo chi phí tăng vọt (Cost > $0.02/req).
+    5. Cảnh báo suy giảm chất lượng câu trả lời (Quality Score < 0.70).
+  - Tích hợp exit code `0` (HEALTHY) và `1` (ANOMALY DETECTED) sẵn sàng cho CI/CD pipeline và cron monitoring.
+
