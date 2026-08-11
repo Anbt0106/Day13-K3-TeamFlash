@@ -4,15 +4,15 @@
 
 - Tên nhóm: TeamFlash
 - Repository URL: https://github.com/Anbt0106/Day13-K3-TeamFlash.git
-- Commit SHA cuối:
+- Commit SHA cuối: `d74bd85`
 - Thành viên và vai trò:
 
-| STT | Họ và tên | Mã học viên |
-|---|---|---|
-| 1 | Nguyễn Văn Tuấn Anh | 2A202601813 |
-| 2 | Bùi Thọ An | 2A202601883 |
-| 3 | Lê Tuấn Cảnh | 2A202601127 |
-| 4 | Nguyễn Đức Trọng | 2A202601291 |
+| STT | Họ và tên | Mã học viên | Vai trò |
+|---|---|---|---|
+| 1 | Nguyễn Văn Tuấn Anh | 2A202601813 | Thành viên B (Security & PII Scrubbing) |
+| 2 | Bùi Thọ An | 2A202601883 | Thành viên D (Leader - Architecture, CP1/CP3, Bonus) |
+| 3 | Lê Tuấn Cảnh | 2A202601127 | Thành viên C (Tracing, Dashboard & Alerts) |
+| 4 | Nguyễn Đức Trọng | 2A202601291 | Thành viên A (Testing, QA & Validation) |
 
 ## 2. Kết quả kỹ thuật
 
@@ -58,11 +58,13 @@ Kết luận CP1: **PASS**. Log API là JSONL hợp lệ, có `correlation_id`, 
 
 ## 4. Prompt versioning
 
-- Prompt name:
-- Version/label baseline:
-- Version/label candidate:
+- Prompt name: `day13-chat`
+- Version/label baseline: `v1` / `production`
+- Version/label candidate: `v2` / `candidate`
 - Trace ID của mỗi version:
-- Bằng chứng đổi label hoặc rollback:
+  - Baseline (`production`, v1): `efadf05f7aee4adc14b23f81bbb51d94`
+  - Candidate (`candidate`, v2): `3a7e66ee35591ec5`
+- Bằng chứng đổi label hoặc rollback: Ghi nhận đầy đủ trong metadata của Langfuse trace (`prompt_name`, `prompt_label`, `prompt_version`, `prompt_source`) và cơ chế quản lý tự động phân giải prompt dự phòng tại [app/prompt_management.py](../app/prompt_management.py).
 
 ## 5. Dashboard, SLO và alerts
 
@@ -86,10 +88,12 @@ Kết luận CP1: **PASS**. Log API là JSONL hợp lệ, có `correlation_id`, 
 
 Với mỗi thành viên, ghi rõ nhiệm vụ và link commit/PR tương ứng.
 
-| Thành viên | Phần việc | Commit/PR | Điều đã học |
-|---|---|---|---|
-| B | Uncomment/nâng cấp `scrub_event` toàn cục, thêm regex passport và `address_vn` trong `app/pii.py`, `app/logging_config.py` | Bổ sung commit/PR | Cách structlog xử lý processor pipeline theo thứ tự; tầm quan trọng của việc scrub mọi field chứ không chỉ payload |
-| Thành viên D | QA CP1; Dashboard Spec/runtime; load test baseline; chủ trì CP3; điều tra Metrics → Traces → Logs; tổng hợp evidence/report/demo | `490b7fb` (CP1), commit CP2/CP3 bổ sung sau khi chốt | Cách kiểm chứng logging/PII, percentile/SLO và định vị root cause bằng span kết hợp correlation ID |
+| STT | Thành viên | Vai trò | Phần việc | Commit/PR | Điều đã học |
+|---|---|---|---|---|---|
+| 1 | Nguyễn Văn Tuấn Anh | Thành viên B | Triển khai & nâng cấp `scrub_event` toàn cục, thêm regex passport và `address_vn` trong `app/pii.py`, `app/logging_config.py`; cập nhật tài liệu giải trình bảo mật PII | `e1da041`, `56dea73`, `2f0304e`, `bb02617`, `e31ad58` | Cách structlog xử lý processor pipeline theo thứ tự; tầm quan trọng của việc scrub mọi field trong event_dict chứ không chỉ riêng payload |
+| 2 | Bùi Thọ An | Thành viên D (Leader) | Triển khai `CorrelationIdMiddleware`, context enrichment; chủ trì điều tra giải quyết CP3 Challenge (`rag_slow`); thiết kế và triển khai toàn bộ Bonus (Tối ưu chi phí, Audit Log, Anomaly Detection) | `d7fb9fa`, `490b7fb`, `483baad`, `d74bd85` | Phương pháp truy vết xuyên suốt bằng correlation ID kết hợp span tracing; xây dựng hệ thống tự động cảnh báo anomaly và tối ưu hóa ngân sách LLM |
+| 3 | Lê Tuấn Cảnh | Thành viên C | Cấu hình Langfuse tracing integration; thiết kế đặc tả Dashboard 6 panel và runtime dashboard HTML/PNG; xây dựng hệ thống cảnh báo dựa trên triệu chứng (Symptom-based Alerts) & Runbook | `ca63122`, `dbc4d91`, `b7399c9`, `05b7db0`, `7d96ff4` | Cách thiết kế SLO/SLA thực tế cho hệ thống AI/LLM; cách xây dựng dashboard trực quan và viết runbook xử lý sự cố chuẩn DevOps/SRE |
+| 4 | Nguyễn Đức Trọng | Thành viên A | Thực hiện load testing hệ thống (`load_test.py`), thu thập log baseline (CP0) và runtime (CP1); QA kiểm thử dashboard validator và log validator; kiểm thử tích hợp toàn trình | `0dbc09a` | Phương pháp thiết lập kịch bản kiểm thử tải và kỹ thuật tự động hóa validation để đảm bảo tính toàn vẹn của dữ liệu giám sát hệ thống |
 
 ## 8. Bonus — Tối ưu chi phí, Audit Log & Custom Automation (+10 điểm)
 

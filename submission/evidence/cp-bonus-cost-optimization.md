@@ -55,4 +55,4 @@ Script tự động phân tích `data/logs.jsonl` và phát hiện các vi phạ
 ```bash
 python scripts/detect_anomalies.py --log-path data/logs.jsonl
 ```
-Kết quả trả về mã thoát `0` (HEALTHY) nếu đạt mọi tiêu chuẩn hoặc `1` (ANOMALIES DETECTED) để tích hợp vào CI/CD pipeline và hệ thống giám sát tự động.
+Kết quả trả về mã thoát `0` (HEALTHY) nếu đạt mọi tiêu chuẩn hoặc `1` (ANOMALY DETECTED) để tích hợp vào CI/CD pipeline và hệ thống giám sát tự động.
