@@ -49,6 +49,8 @@ def test_agent_links_prompt_version_to_trace_and_generation(monkeypatch) -> None
 
     trace_metadata = client.trace_updates[-1]["metadata"]
     generation_update = client.generation_updates[-1]
+    # correlation_id is bound via structlog contextvars (CP1); when no request
+    # middleware has run (as in this unit test), it defaults to "MISSING".
     assert trace_metadata == {
         "prompt_name": "day13-chat",
         "prompt_label": "production",
