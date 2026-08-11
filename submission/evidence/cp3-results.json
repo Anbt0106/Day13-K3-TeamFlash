@@ -1,0 +1,51 @@
+{
+  "challenge_id": "day13-k3-observability-v1",
+  "incident": "rag_slow",
+  "affected_feature": "refund",
+  "latency_threshold_ms": 2000,
+  "baseline": {
+    "requests": 5,
+    "p50_ms": 176,
+    "p95_ms": 270,
+    "p99_ms": 270,
+    "requests_over_threshold": 0,
+    "error_rate_pct": 0.0,
+    "total_cost_usd": 0.010221,
+    "tokens_in": 162,
+    "tokens_out": 649,
+    "quality_avg": 0.86
+  },
+  "incident_active": {
+    "requests": 5,
+    "p50_ms": 2673,
+    "p95_ms": 2697,
+    "p99_ms": 2697,
+    "requests_over_threshold": 5,
+    "error_rate_pct": 0.0,
+    "total_cost_usd": 0.008751,
+    "tokens_in": 162,
+    "tokens_out": 551,
+    "quality_avg": 0.86
+  },
+  "after_fix": {
+    "requests": 5,
+    "p50_ms": 153,
+    "p95_ms": 166,
+    "p99_ms": 166,
+    "requests_over_threshold": 0,
+    "error_rate_pct": 0.0,
+    "total_cost_usd": 0.010251,
+    "tokens_in": 162,
+    "tokens_out": 651,
+    "quality_avg": 0.86
+  },
+  "trace": {
+    "trace_id": "efadf05f7aee4adc14b23f81bbb51d94",
+    "correlation_id": "req-9864732e",
+    "session_id": "k3-challenge-trace-evidence",
+    "request_latency_ms": 3605,
+    "retrieve_context_span_id": "3a7e66ee35591ec5",
+    "retrieve_context_duration_ms": 2501,
+    "generate_response_duration_ms": 151
+  }
+}
