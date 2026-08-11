@@ -3,8 +3,8 @@
 ## 1. Thông tin nhóm
 
 - Tên nhóm: TeamFlash
-- Repository URL: https://github.com/Anbt0106/Day13-K3-TeamFlash.git
-- Commit SHA cuối: `d74bd85`
+- Repository URL: https://github.com/Anbt0106/K3-DAY13-2A202601883.git
+- Commit SHA cuối: Hoàn thành lab Day 13 - 2A202601883
 - Thành viên và vai trò:
 
 | STT | Họ và tên | Mã học viên | Vai trò |
