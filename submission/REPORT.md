@@ -23,6 +23,7 @@
   - Unique correlation IDs found: 0
   - Potential PII leaks detected: 0
   - Scorecard: [FAILED] Missing required fields | [FAILED] Correlation ID propagation | [FAILED] Log enrichment | [PASSED] PII scrubbing
+  - Baseline log đã redact: `submission/evidence/cp0-baseline-log-redacted.jsonl`
 - Điểm `validate_logs.py` (CP1 - sau khi thêm correlation ID, enrichment, PII scrubbing mở rộng): **100/100**
   - Total log records analyzed: 21
   - Records with missing required fields: 0
@@ -66,7 +67,7 @@ Kết luận CP1: **PASS**. Log API là JSONL hợp lệ, có `correlation_id`, 
 ## 5. Dashboard, SLO và alerts
 
 - Kết quả `validate_dashboard.py`: **HỢP LỆ: 6/6 panel**; evidence: [`submission/evidence/dashboard-validator.txt`](evidence/dashboard-validator.txt).
-- Evidence dashboard: [`submission/evidence/dashboard-cp2.html`](evidence/dashboard-cp2.html), sinh trực tiếp từ `data/logs.jsonl`; đặc tả tại [`docs/dashboard-spec.md`](../docs/dashboard-spec.md).
+- Evidence dashboard: [`submission/evidence/dashboard-cp2.png`](evidence/dashboard-cp2.png) và [`submission/evidence/dashboard-cp2.html`](evidence/dashboard-cp2.html), sinh trực tiếp từ `data/logs.jsonl`; đặc tả tại [`docs/dashboard-spec.md`](../docs/dashboard-spec.md).
 - SLO đã chọn và lý do: P95 ≤ 3000 ms, error rate ≤ 2%, quality mean ≥ 0.75 và cost ≤ 2.5 USD. Các ngưỡng bao phủ trải nghiệm người dùng, độ tin cậy, chất lượng và ngân sách.
 - Alert rules và runbook: [`config/alert_rules.yaml`](../config/alert_rules.yaml) và [`docs/alerts.md`](../docs/alerts.md). Alert dựa trên triệu chứng/SLO, có severity, duration, owner và các bước Metrics → Traces → Logs.
 

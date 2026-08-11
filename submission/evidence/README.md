@@ -5,6 +5,9 @@
 - `dashboard-validator.txt`: successful result from `python scripts/validate_dashboard.py`.
 - `docs/dashboard-spec.md`: six-panel dashboard specification with a 60-minute time range, 30-second refresh, units, and SLO thresholds.
 - `dashboard-cp2.html`: standalone six-panel runtime dashboard generated from `data/logs.jsonl`.
+- `dashboard-cp2.png`: runtime screenshot showing all six panels, time range, refresh, units and thresholds.
+- `cp0-baseline-log-redacted.jsonl`: preserved baseline log before CP1 remediation.
+- `cp1-runtime-log.jsonl`: complete validated CP1 runtime log used for QA evidence.
 - `cp3-results.json`: baseline, incident, recovery and Langfuse trace/span identifiers.
 - `cp3-investigation.md`: complete Metrics → Traces → Logs investigation and remediation report.
 - `cp3-related-log-redacted.jsonl`: verifiable incident and recovery log lines without raw PII.
