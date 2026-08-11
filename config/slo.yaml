@@ -4,13 +4,16 @@ slis:
   latency_p95_ms:
     objective: 3000
     target: 99.5
-    note: Replace with your group's target
+    note: At least 99.5% of requests should complete within 3 seconds over the rolling window.
   error_rate_pct:
     objective: 2
     target: 99.0
+    note: At least 99% of rolling-window traffic should remain below 2% failed requests.
   daily_cost_usd:
     objective: 2.5
     target: 100.0
+    note: Daily spend must remain at or below the lab budget.
   quality_score_avg:
     objective: 0.75
     target: 95.0
+    note: At least 95% of rolling windows should maintain an average quality score of 0.75 or higher.

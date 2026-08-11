@@ -12,9 +12,17 @@ TRAFFIC: int = 0
 QUALITY_SCORES: list[float] = []
 
 
-def record_request(latency_ms: int, cost_usd: float, tokens_in: int, tokens_out: int, quality_score: float) -> None:
+def record_request_started() -> None:
+    """Record an incoming request before application work begins.
+
+    Keeping this separate from ``record_request`` makes the denominator of
+    error rate include failed requests as well as successful ones.
+    """
     global TRAFFIC
     TRAFFIC += 1
+
+
+def record_request(latency_ms: int, cost_usd: float, tokens_in: int, tokens_out: int, quality_score: float) -> None:
     REQUEST_LATENCIES.append(latency_ms)
     REQUEST_COSTS.append(cost_usd)
     REQUEST_TOKENS_IN.append(tokens_in)
@@ -38,12 +46,19 @@ def percentile(values: list[int], p: int) -> float:
 
 
 def snapshot() -> dict:
+<<<<<<< HEAD
     total_errors = sum(ERRORS.values())
     total_requests = TRAFFIC + total_errors
     error_rate = (total_errors / total_requests * 100) if total_requests > 0 else 0.0
 
+=======
+    failed_requests = sum(ERRORS.values())
+    error_rate_pct = (failed_requests / TRAFFIC * 100) if TRAFFIC else 0.0
+>>>>>>> acf9fbd (feat: complete CP2 metrics tracing dashboard alerts)
     return {
         "traffic": TRAFFIC,
+        "error_rate_pct": round(error_rate_pct, 4),
+        "failed_requests": failed_requests,
         "latency_p50": percentile(REQUEST_LATENCIES, 50),
         "latency_p95": percentile(REQUEST_LATENCIES, 95),
         "latency_p99": percentile(REQUEST_LATENCIES, 99),

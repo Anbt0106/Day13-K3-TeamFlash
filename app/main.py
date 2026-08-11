@@ -9,7 +9,7 @@ from structlog.contextvars import bind_contextvars
 from .agent import LabAgent
 from .incidents import disable, enable, status
 from .logging_config import configure_logging, get_logger
-from .metrics import record_error, snapshot
+from .metrics import record_error, record_request_started, snapshot
 from .middleware import CorrelationIdMiddleware
 from .pii import hash_user_id, summarize_text
 from .schemas import ChatRequest, ChatResponse
@@ -54,6 +54,7 @@ async def generic_exception_handler(request: Request, exc: Exception) -> JSONRes
 
 @app.post("/chat", response_model=ChatResponse)
 async def chat(request: Request, body: ChatRequest) -> ChatResponse:
+<<<<<<< HEAD
     # Enrich — tất cả log sau đây tự động có các trường này
     bind_contextvars(
         user_id_hash=hash_user_id(body.user_id),
@@ -63,6 +64,12 @@ async def chat(request: Request, body: ChatRequest) -> ChatResponse:
         env=os.getenv("APP_ENV", "dev"),
     )
 
+=======
+    record_request_started()
+    # TODO: Enrich logs with request context (user_id_hash, session_id, feature, model, env)
+    # bind_contextvars(...)
+    
+>>>>>>> acf9fbd (feat: complete CP2 metrics tracing dashboard alerts)
     log.info(
         "request_received",
         service="api",
@@ -74,6 +81,7 @@ async def chat(request: Request, body: ChatRequest) -> ChatResponse:
             feature=body.feature,
             session_id=body.session_id,
             message=body.message,
+            correlation_id=request.state.correlation_id,
         )
         log.info(
             "response_sent",
