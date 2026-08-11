@@ -54,6 +54,7 @@ def test_agent_links_prompt_version_to_trace_and_generation(monkeypatch) -> None
         "prompt_label": "production",
         "prompt_version": "3",
         "prompt_source": "langfuse",
+        "correlation_id": "MISSING",
     }
     assert generation_update["prompt"] is client.prompt
     assert generation_update["metadata"]["prompt_version"] == "3"
