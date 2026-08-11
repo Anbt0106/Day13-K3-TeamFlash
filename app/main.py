@@ -54,8 +54,7 @@ async def generic_exception_handler(request: Request, exc: Exception) -> JSONRes
 
 @app.post("/chat", response_model=ChatResponse)
 async def chat(request: Request, body: ChatRequest) -> ChatResponse:
-<<<<<<< HEAD
-    # Enrich — tất cả log sau đây tự động có các trường này
+    record_request_started()
     bind_contextvars(
         user_id_hash=hash_user_id(body.user_id),
         session_id=body.session_id,
@@ -64,12 +63,6 @@ async def chat(request: Request, body: ChatRequest) -> ChatResponse:
         env=os.getenv("APP_ENV", "dev"),
     )
 
-=======
-    record_request_started()
-    # TODO: Enrich logs with request context (user_id_hash, session_id, feature, model, env)
-    # bind_contextvars(...)
-    
->>>>>>> acf9fbd (feat: complete CP2 metrics tracing dashboard alerts)
     log.info(
         "request_received",
         service="api",

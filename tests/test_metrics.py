@@ -11,8 +11,10 @@ def test_snapshot_error_rate_pct() -> None:
     metrics.ERRORS.clear()
     metrics.ERRORS["RuntimeError"] = 2
     metrics.ERRORS["TimeoutError"] = 3
-    # total errors = 5, total requests = 15 => error_rate = (5/15)*100 = 33.33%
+    # TRAFFIC records requests received, including requests that later fail.
+    # total errors = 5, total requests = 10 => error_rate = 50%
     snap = snapshot()
-    assert snap["error_rate_pct"] == 33.33
+    assert snap["error_rate_pct"] == 50.0
+    assert snap["failed_requests"] == 5
     assert snap["traffic"] == 10
 

@@ -13,16 +13,18 @@ QUALITY_SCORES: list[float] = []
 
 
 def record_request_started() -> None:
-    """Record an incoming request before application work begins.
-
-    Keeping this separate from ``record_request`` makes the denominator of
-    error rate include failed requests as well as successful ones.
-    """
+    """Record an incoming request before application work begins."""
     global TRAFFIC
     TRAFFIC += 1
 
 
-def record_request(latency_ms: int, cost_usd: float, tokens_in: int, tokens_out: int, quality_score: float) -> None:
+def record_request(
+    latency_ms: int,
+    cost_usd: float,
+    tokens_in: int,
+    tokens_out: int,
+    quality_score: float,
+) -> None:
     REQUEST_LATENCIES.append(latency_ms)
     REQUEST_COSTS.append(cost_usd)
     REQUEST_TOKENS_IN.append(tokens_in)
@@ -30,10 +32,8 @@ def record_request(latency_ms: int, cost_usd: float, tokens_in: int, tokens_out:
     QUALITY_SCORES.append(quality_score)
 
 
-
 def record_error(error_type: str) -> None:
     ERRORS[error_type] += 1
-
 
 
 def percentile(values: list[int], p: int) -> float:
@@ -44,17 +44,9 @@ def percentile(values: list[int], p: int) -> float:
     return float(items[idx])
 
 
-
 def snapshot() -> dict:
-<<<<<<< HEAD
-    total_errors = sum(ERRORS.values())
-    total_requests = TRAFFIC + total_errors
-    error_rate = (total_errors / total_requests * 100) if total_requests > 0 else 0.0
-
-=======
     failed_requests = sum(ERRORS.values())
     error_rate_pct = (failed_requests / TRAFFIC * 100) if TRAFFIC else 0.0
->>>>>>> acf9fbd (feat: complete CP2 metrics tracing dashboard alerts)
     return {
         "traffic": TRAFFIC,
         "error_rate_pct": round(error_rate_pct, 4),
@@ -66,7 +58,6 @@ def snapshot() -> dict:
         "total_cost_usd": round(sum(REQUEST_COSTS), 4),
         "tokens_in_total": sum(REQUEST_TOKENS_IN),
         "tokens_out_total": sum(REQUEST_TOKENS_OUT),
-        "error_rate_pct": round(error_rate, 2),
         "error_breakdown": dict(ERRORS),
         "quality_avg": round(mean(QUALITY_SCORES), 4) if QUALITY_SCORES else 0.0,
     }

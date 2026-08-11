@@ -62,31 +62,17 @@ class LabAgent:
             "prompt_label": prompt.label,
             "prompt_version": prompt.version,
             "prompt_source": prompt.source,
+            "correlation_id": correlation_id
+            or get_contextvars().get("correlation_id", "MISSING"),
         }
-        if correlation_id:
-            trace_metadata["correlation_id"] = correlation_id
-
-        # Keep trace I/O concise and scrubbed. The decorator intentionally
-        # disables automatic argument capture so secrets/configuration do not
-        # leak into Langfuse.
         langfuse_client.update_current_trace(
             name="chat-response",
             user_id=hash_user_id(user_id),
             session_id=session_id,
             tags=["lab", feature, self.model],
-<<<<<<< HEAD
-            metadata={
-                "prompt_name": prompt.name,
-                "prompt_label": prompt.label,
-                "prompt_version": prompt.version,
-                "prompt_source": prompt.source,
-                "correlation_id": get_contextvars().get("correlation_id", "MISSING"),
-            },
-=======
             input={"message": summarize_text(message)},
             output={"answer": summarize_text(response.text)},
             metadata=trace_metadata,
->>>>>>> acf9fbd (feat: complete CP2 metrics tracing dashboard alerts)
         )
         langfuse_client.update_current_generation(
             model=self.model,
@@ -135,7 +121,9 @@ class LabAgent:
             score += 0.2
         if len(answer) > 40:
             score += 0.1
-        if question.lower().split()[0:1] and any(token in answer.lower() for token in question.lower().split()[:3]):
+        if question.lower().split()[0:1] and any(
+            token in answer.lower() for token in question.lower().split()[:3]
+        ):
             score += 0.1
         if "[REDACTED" in answer:
             score -= 0.2
