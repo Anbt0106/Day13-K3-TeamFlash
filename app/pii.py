@@ -5,11 +5,11 @@ import re
 
 PII_PATTERNS: dict[str, str] = {
     "email": r"[\w\.-]+@[\w\.-]+\.\w+",
-    "phone_vn": r"(?<!\d)(?:\+84|0)(?:[ .-]?\d){9}(?!\d)|(?:\+84|0)[ \.-]?\d{2,3}[ \.-]?\d{3}[ \.-]?\d{3,4}",
+    "phone_vn": r"(?<!\d)(?:\+84|0)(?:[ .-]?\d){9}(?!\d)",
     "cccd": r"\b\d{12}\b",
     "credit_card": r"\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b",
     "passport": r"\b[A-Z]\d{7,8}\b",
-    "address_vn": r"(?i)\b(?:số nhà|so nha|đường|duong|phường|phuong|quận|quan|huyện|huyen|tỉnh|tinh|thành phố|thanh pho)\b",
+    "address_vn": r"\b(?:số nhà|đường|phường|quận|huyện|tỉnh|thành phố)\b",
 }
 
 
